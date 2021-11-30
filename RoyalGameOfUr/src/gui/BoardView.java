@@ -14,10 +14,14 @@ import javax.swing.JPanel;
 
 import java.util.ArrayList;
 
-public class Board extends JFrame {
+import controller.BoardController;
+import model.BoardModel;
+
+public class BoardView extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
+    private BoardController controller;
     private ArrayList<Square> squares;
     private ArrayList<PlayingPiece> blackPieces;
     private ArrayList<PlayingPiece> whitePieces;
@@ -27,12 +31,12 @@ public class Board extends JFrame {
     private JLabel turnLabel;
 
     // Constructor
-    public Board() {
+    public BoardView() {
+        controller = new BoardController();
         squares = new ArrayList<>(24);
         blackPieces = new ArrayList<>(5);
         whitePieces = new ArrayList<>(5);
         createUI();
-        
     }
 
     // Main method to crate GUI
@@ -172,39 +176,32 @@ public class Board extends JFrame {
         return whitePieces;
     }
 
-    // TODO: Redo the update method
+    public void updateBoard() {
+        GridBagConstraints gbc = new GridBagConstraints();
 
-    // public void updateBoard(Board board) {
-    //     GridBagConstraints gbc = new GridBagConstraints();
+        BoardModel model = controller.getModel();
+        int[] board = model.getBoard();
+        for (int i = 0; i < board.length; i++) {
+            if (board[i] == -1) {
+                continue;
+            }
+            ArrayList<Integer> gridCoords = getGridCoordsFromSquareID(i);
+            gbc.gridx = gridCoords.get(0);
+            gbc.gridy = gridCoords.get(1);
+            if (board[i] == BoardModel.BLACK_PIECE) {
+                boardPanel.add(blackPieces.get(i), gbc, 1);
+            } else {
+                if (gridCoords.get(0) == 7 && gridCoords.get(1) == 2) {
+                    boardPanel.add(whitePieces.get(i), gbc, 0);
+                } else {
+                    boardPanel.add(whitePieces.get(i), gbc, 1);
+                }
+            }
+        }
 
-    //     // Place Black Piece
-    //     blackPieces.forEach(f -> boardPanel.remove(f));
-    //     for (int i = 0; i < blackPieces.size(); i++) {
-    //         ArrayList<Integer> gridCoords = getGridCoordsFromSquareID(
-    //                 board.getBlackPieces().get(i).getSquare().getSquareID());
-    //         gbc.gridx = gridCoords.get(0);
-    //         gbc.gridy = gridCoords.get(1);
-    //         boardPanel.add(blackPieces.get(i), gbc, 1);
-    //     }
-
-    //     // Place White Piece
-    //     whitePieces.forEach(f -> boardPanel.remove(f));
-    //     for (int i = 0; i < whitePieces.size(); i++) {
-    //         ArrayList<Integer> gridCoords = getGridCoordsFromSquareID(
-    //                 board.getWhitePieces().get(i).getSquare().getSquareID());
-    //         gbc.gridx = gridCoords.get(0);
-    //         gbc.gridy = gridCoords.get(1);
-    //         if (gridCoords.get(0) == 7 && gridCoords.get(1) == 2) {
-    //             boardPanel.add(whitePieces.get(i), gbc, 0);
-    //         } else {
-    //             boardPanel.add(whitePieces.get(i), gbc, 1);
-    //         }
-
-    //     }
-
-    //     boardPanel.validate();
-    //     repaint();
-    // }
+        boardPanel.validate();
+        repaint();
+    }
 
     // Method to generate the window for outputing result when either side has won
     public int showGameOverDialog(boolean isBlackWon) {

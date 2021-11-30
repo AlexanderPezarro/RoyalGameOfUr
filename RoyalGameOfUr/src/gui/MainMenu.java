@@ -41,7 +41,8 @@ public class MainMenu extends JFrame {
         singlePlayerButton.setFocusPainted(false);
         singlePlayerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // TODO
+                new BoardView();
+                dispose();
             }
         });
         gbc.gridx = 0;
