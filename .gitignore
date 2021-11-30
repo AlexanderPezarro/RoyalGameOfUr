@@ -24,3 +24,6 @@ hs_err_pid*
 
 # VS code settings
 **/.vscode/
+
+# VS code bin folder
+**/bin/
