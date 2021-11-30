@@ -1,0 +1,13 @@
+Dice:
+    Roll three triangle dice resulting in a total roll between 0 and 3
+    Alternitivly roll a single die that outputs a number from 0 to 3
+Moves:
+    Can split the total roll among any of the pieces currently on the board
+    CAN'T move backwards
+    Takes a move to move a piece onto the board
+    Landing on an ememy piece moves their piece back to the beginning
+    CAN'T have more than 1 friendly piece on the same square
+    Don't have to use all moves each turn
+Board:
+    Landing on a rossete square gives another roll (limited to once per turn)
+    A player wins when all their pieces have reached the end square
