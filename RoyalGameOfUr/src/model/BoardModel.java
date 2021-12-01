@@ -11,6 +11,10 @@ public class BoardModel {
         return isBlack ? 4 : 20;
     }
 
+    public static int getFinishSquare(boolean isBlack) {
+        return isBlack ? 5 : 21;
+    }
+
     public BoardModel() {
         squares = new int[24];
         for (int i = 0; i < squares.length; i++) {
