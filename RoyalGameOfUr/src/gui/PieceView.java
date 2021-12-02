@@ -10,7 +10,7 @@ import java.awt.Dimension;
  * This class creates a JLabel with one of two icons that looks like a playing
  * piece.
  */
-public class PlayingPiece extends JLabel {
+public class PieceView extends JLabel {
 
     private static final long serialVersionUID = 1L;
     private static final Icon whitePlayingPieceIcon = new ImageIcon("src/assets/WhitePlayingPiece.png");
@@ -26,7 +26,7 @@ public class PlayingPiece extends JLabel {
      * @param isBlack If true uses the black piece icon otherwise the white piece
      *                icon
      */
-    public PlayingPiece(int id, boolean isBlack) {
+    public PieceView(int id, boolean isBlack) {
         super();
 
         if (isBlack) {
