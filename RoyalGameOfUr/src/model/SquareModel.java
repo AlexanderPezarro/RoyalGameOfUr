@@ -59,9 +59,11 @@ public class SquareModel {
             if (isOccupied()) {
                 System.out.println("addPiece - Can't add piece as square is occupied");
             } else {
+                piece.setCurrentSquareID(id);
                 pieces.add(piece); 
             }
         } else {
+            piece.setCurrentSquareID(id);
             pieces.add(piece);
         }
     }

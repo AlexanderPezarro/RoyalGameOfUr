@@ -1,29 +1,45 @@
 package model;
 
-import java.util.Arrays;
+import java.util.HashSet;
 
 public class Path {
     private final static int[] BLACK_PATH = { 4, 3, 2, 1, 0, 8, 9, 10, 11, 12, 13, 14, 15, 7, 6, 5 };
     private final static int[] WHITE_PATH = { 20, 19, 18, 17, 16, 8, 9, 10, 11, 12, 13, 14, 15, 23, 22, 21 };
 
-    public static int[] getPossibleMoves(boolean isBlack, int currentSquare, int moves) {
+    public static HashSet<Integer> getPossibleMoves(boolean isBlack, int currentSquare, int moves) {
         if (moves == 0) {
-            return new int[0];
+            return new HashSet<Integer>(0);
         }
         if (isBlack) {
             for (int i = 0; i < BLACK_PATH.length; i++) {
                 if (BLACK_PATH[i] == currentSquare) {
-                    return Arrays.copyOfRange(BLACK_PATH, i, i + moves);
+                    HashSet<Integer> possibleMoves = new HashSet<>(moves);
+                    for (int j = 1; j <= moves; j++) {
+                        if (i + j < BLACK_PATH.length) {
+                            possibleMoves.add(BLACK_PATH[i + j]);
+                        } else {
+                            break;
+                        }
+                    }
+                    return possibleMoves;
                 }
             }
         } else {
             for (int i = 0; i < WHITE_PATH.length; i++) {
                 if (WHITE_PATH[i] == currentSquare) {
-                    return Arrays.copyOfRange(WHITE_PATH, i, i + moves);
+                    HashSet<Integer> possibleMoves = new HashSet<>(moves);
+                    for (int j = 1; j <= moves; j++) {
+                        if (i + j < WHITE_PATH.length) {
+                            possibleMoves.add(WHITE_PATH[i + j]);
+                        } else {
+                            break;
+                        }
+                    }
+                    return possibleMoves;
                 }
             }
         }
-        return new int[0];
+        return new HashSet<Integer>(0);
     }
 
     public static int getDistanceBetweenSquares(boolean isBlack, int square1, int square2) {

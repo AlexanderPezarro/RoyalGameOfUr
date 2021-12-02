@@ -14,28 +14,27 @@ import javax.swing.JPanel;
 
 import java.util.ArrayList;
 
-import controller.BoardController;
 import model.BoardModel;
+import model.PieceModel;
+import model.SquareModel;
 
 public class BoardView extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
-    private BoardController controller;
-    private ArrayList<Square> squares;
-    private ArrayList<PlayingPiece> blackPieces;
-    private ArrayList<PlayingPiece> whitePieces;
+    private final int numPieces;
+    private ArrayList<SquareView> squares;
+    private ArrayList<PieceView> pieces;
     private JLabel movesCount;
     private JLayeredPane boardPanel;
     private JButton endTurnBtn;
     private JLabel turnLabel;
 
     // Constructor
-    public BoardView() {
-        controller = new BoardController();
+    public BoardView(int numPieces) {
         squares = new ArrayList<>(24);
-        blackPieces = new ArrayList<>(5);
-        whitePieces = new ArrayList<>(5);
+        this.numPieces = numPieces;
+        pieces = new ArrayList<>(numPieces * 2);
         createUI();
     }
 
@@ -120,7 +119,7 @@ public class BoardView extends JFrame {
             } else {
                 isPainted = true;
             }
-            Square square = new Square(isRossete, i, isPainted);
+            SquareView square = new SquareView(isRossete, i, isPainted);
 
             boardPanel.add(square, gbc, 0);
             squares.add(square);
@@ -130,21 +129,13 @@ public class BoardView extends JFrame {
     // Method to add Pieces of both sides to board
     private void addDefaultPieces() {
         GridBagConstraints gbc = new GridBagConstraints();
-        // Initialise Black piece
-        for (int i = 0; i < 5; i++) {
-            PlayingPiece blackPiece = new PlayingPiece(i, true);
+
+        for (int i = 0; i < numPieces * 2; i++) {
+            PieceView piece = new PieceView(i, i < numPieces);
             gbc.gridx = 4;
-            gbc.gridy = 0;
-            boardPanel.add(blackPiece, gbc, 1);
-            blackPieces.add(blackPiece);
-        }
-        // Initialise White piece
-        for (int i = 0; i < 5; i++) {
-            PlayingPiece whitePiece = new PlayingPiece(i, false);
-            gbc.gridx = 4;
-            gbc.gridy = 2;
-            boardPanel.add(whitePiece, gbc, 1);
-            whitePieces.add(whitePiece);
+            gbc.gridy = i < numPieces ? 0 : 2;
+            boardPanel.add(piece, gbc, 1);
+            pieces.add(piece);
         }
     }
 
@@ -162,39 +153,22 @@ public class BoardView extends JFrame {
     }
 
     // Return the squares on the board as ArrayList
-    public ArrayList<Square> getSquares() {
+    public ArrayList<SquareView> getSquares() {
         return squares;
     }
 
-    // Return all Black pieces as ArrayList
-    public ArrayList<PlayingPiece> getBlackPieces() {
-        return blackPieces;
-    }
-
-    // Return all White pieces as ArrayList
-    public ArrayList<PlayingPiece> getWhitePieces() {
-        return whitePieces;
-    }
-
-    public void updateBoard() {
+    public void updateBoard(BoardModel model) {
         GridBagConstraints gbc = new GridBagConstraints();
 
-        BoardModel model = controller.getModel();
-        int[] board = model.getBoard();
-        for (int i = 0; i < board.length; i++) {
-            if (board[i] == -1) {
-                continue;
-            }
-            ArrayList<Integer> gridCoords = getGridCoordsFromSquareID(i);
+        for (SquareModel square : model.getBoard()) {
+            ArrayList<Integer> gridCoords = getGridCoordsFromSquareID(square.getID());
             gbc.gridx = gridCoords.get(0);
             gbc.gridy = gridCoords.get(1);
-            if (board[i] == BoardModel.BLACK_PIECE) {
-                boardPanel.add(blackPieces.get(i), gbc, 1);
-            } else {
-                if (gridCoords.get(0) == 7 && gridCoords.get(1) == 2) {
-                    boardPanel.add(whitePieces.get(i), gbc, 0);
+            for (PieceModel piece : square.getPieces()) {
+                if (!piece.isBlack() && gridCoords.get(0) == 7 && gridCoords.get(1) == 2) {
+                    boardPanel.add(pieces.get(piece.getId()), gbc, 0);    
                 } else {
-                    boardPanel.add(whitePieces.get(i), gbc, 1);
+                    boardPanel.add(pieces.get(piece.getId()), gbc, 1);
                 }
             }
         }

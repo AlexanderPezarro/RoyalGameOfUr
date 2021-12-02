@@ -12,6 +12,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import controller.BoardController;
+
 public class MainMenu extends JFrame {
 
     public static void main(String[] args) {
@@ -41,7 +43,7 @@ public class MainMenu extends JFrame {
         singlePlayerButton.setFocusPainted(false);
         singlePlayerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new BoardView();
+                new BoardController();
                 dispose();
             }
         });
