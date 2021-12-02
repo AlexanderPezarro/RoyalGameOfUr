@@ -13,7 +13,7 @@ import java.awt.Image;
  * This class describes a square JLabel that can have a rossete and has a
  * changable border color.
  */
-public class Square extends JLabel {
+public class SquareView extends JLabel {
 
     private static final long serialVersionUID = 1L;
 
@@ -36,7 +36,7 @@ public class Square extends JLabel {
      * @param id        The unique id of this square
      * @param isPainted If this square should be blank or not
      */
-    public Square(boolean isRosette, int id, boolean isPainted) {
+    public SquareView(boolean isRosette, int id, boolean isPainted) {
         super();
         this.isPainted = isPainted;
         this.id = id;
