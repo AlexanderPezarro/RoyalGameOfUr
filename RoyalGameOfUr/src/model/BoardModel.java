@@ -1,22 +1,28 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class BoardModel {
 
     private ArrayList<SquareModel> squares;
     private ArrayList<PieceModel> pieces;
+    private ArrayList<SquareModel> rosseteSquares;
 
     public BoardModel(int numPieces) {
         squares = new ArrayList<>(24);
         for (int i = 0; i < 24; i++) {
             squares.add(new SquareModel(i));
         }
+        rosseteSquares = new ArrayList<SquareModel>(Arrays.asList(squares.get(0),squares.get(6),squares.get(11),squares.get(16),squares.get(22)));
+
         getInitialSquare(true).setStarting();
         getInitialSquare(false).setStarting();
 
         getFinishSquare(true).setFinishing();
         getFinishSquare(false).setFinishing();
+
+        getRosseteSquares().forEach(square -> square.setRossete());
 
         pieces = new ArrayList<>(numPieces * 2);
         for (int i = 0; i < numPieces * 2; i++) {
@@ -35,6 +41,10 @@ public class BoardModel {
 
     public SquareModel getFinishSquare(boolean isBlack) {
         return isBlack ? squares.get(5) : squares.get(21);
+    }
+
+    public ArrayList<SquareModel> getRosseteSquares() {
+        return rosseteSquares;
     }
 
     public boolean isSquareOccupied(int squareID) {
@@ -90,8 +100,13 @@ public class BoardModel {
         } else {
             PieceModel destinationPiece = destinationSquare.getPiece();
             if (destinationPiece.isBlack() == piece.isBlack()) {
-                System.out.println("Invalid move - destination square has piece of same colour");
-                return false;
+                if (destinationSquare.isFinishing()) {
+                    destinationSquare.addPiece(piece);
+                    initialSquare.removePiece(piece);
+                } else {
+                    System.out.println("Invalid move - destination square has piece of same colour");
+                    return false;
+                }
             } else {
                 destinationSquare.removePiece(destinationPiece);
                 destinationSquare.addPiece(piece);

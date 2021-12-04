@@ -7,20 +7,13 @@ public class SquareModel {
     private ArrayList<PieceModel> pieces;
     private boolean isStarting;
     private boolean isFinishing;
+    private boolean isRossete;
 
     public SquareModel(int id) {
         this.id = id;
         pieces = new ArrayList<>();
         isStarting = false;
         isFinishing = false;
-    }
-
-    public void setStarting() {
-        isStarting = true;
-    }
-
-    public void setFinishing() {
-        isFinishing = true;
     }
 
     public int getID() {
@@ -72,8 +65,24 @@ public class SquareModel {
         return isStarting;
     }
 
+    public void setStarting() {
+        isStarting = true;
+    }
+
     public boolean isFinishing() {
         return isFinishing;
+    }
+
+    public void setFinishing() {
+        isFinishing = true;
+    }
+
+    public boolean isRossete() {
+        return isRossete;
+    }
+
+    public void setRossete() {
+        isRossete = true;
     }
 
     public boolean isOccupied() {

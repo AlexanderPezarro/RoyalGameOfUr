@@ -22,8 +22,8 @@ public class BoardController {
 
     private int moves;
     private boolean isBlackTurn;
-    private boolean isPlayerBlack;
     private SquareModel lastPressed;
+    private boolean hasRerolled;
 
     public BoardController() {
         model = new BoardModel(NUM_PIECES);
@@ -31,14 +31,10 @@ public class BoardController {
         moves = 0;
         isBlackTurn = true;
         lastPressed = null;
-        isPlayerBlack = true;
+        hasRerolled = false;
 
         addActionListerners();
         view.setTurnLabel(isBlackTurn);
-    }
-
-    public void setPlayerColour(boolean isPlayerBlack) {
-        this.isPlayerBlack = isPlayerBlack;
     }
 
     private void addActionListerners() {
@@ -47,6 +43,7 @@ public class BoardController {
             public void actionPerformed(ActionEvent e) {
                 isBlackTurn = !isBlackTurn;
                 moves = 0;
+                hasRerolled = false;
 
                 view.setMovesCount(moves);
                 view.getRollButton().setEnabled(true);
@@ -57,7 +54,7 @@ public class BoardController {
         view.getRollButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                moves = (int) (Math.random() * 4);
+                moves += (int) (Math.random() * 4);
                 view.setMovesCount(moves);
                 view.getRollButton().setEnabled(false);
             }
@@ -72,30 +69,55 @@ public class BoardController {
     }
 
     private void squarePressed(SquareView squareViewPressed) {
+        // Get the model of the square pressed
         SquareModel squareModel = model.getBoard().get(squareViewPressed.getID());
-        if (lastPressed != null && squareModel.getID() == lastPressed.getID()) {
-            view.clearHighlights();
-            lastPressed = null;
-        }
+
+        // pieceModel will be null if square has no piece
         PieceModel pieceModel = squareModel.getPiece();
         if (lastPressed != null) {
-            if (squareViewPressed.isHighlighted()) {
-                PieceModel piece = lastPressed.getPiece();
-                if (model.movePiece(lastPressed.getID(), squareModel.getID(), moves)) {
-                    moves -= Path.getDistanceBetweenSquares(piece.isBlack(), lastPressed.getID(), squareModel.getID());
-                    view.setMovesCount(moves);
+            // Checks if the square pressed is the same as the last square pressed
+            if (squareModel.getID() == lastPressed.getID()) {
+                view.clearHighlights();
+                lastPressed = null;
+                view.updateBoard(model);
+            } else {
+                HashSet<Integer> validMoveIDs = Path.getPossibleMoves(lastPressed.getPiece().isBlack(),
+                        lastPressed.getID(),
+                        moves);
+
+                if (validMoveIDs.contains(squareModel.getID())) {
+                    PieceModel piece = lastPressed.getPiece();
+                    // movePiece will return true if piece is moved
+                    if (model.movePiece(lastPressed.getID(), squareModel.getID(), moves)) {
+                        // Only allowed 1 extra reroll per turn
+                        if (squareModel.isRossete() && !hasRerolled) {
+                            hasRerolled = true;
+                            view.getRollButton().setEnabled(true);
+                        }
+
+                        moves -= Path.getDistanceBetweenSquares(piece.isBlack(), lastPressed.getID(),
+                                squareModel.getID());
+                        view.setMovesCount(moves);
+                        view.clearHighlights();
+                        lastPressed = null;
+                        view.updateBoard(model);
+                    }
+                } else {
                     view.clearHighlights();
+                    lastPressed = null;
                     view.updateBoard(model);
                 }
             }
-        }
-
-        if (pieceModel != null && isBlackTurn == pieceModel.isBlack() && !pieceModel.isFinished()) {
-            HashSet<Integer> squareIDs = Path.getPossibleMoves(pieceModel.isBlack(), squareModel.getID(), moves);
-            view.clearHighlights();
-            view.hightlightSquares(squareIDs);
-            lastPressed = squareModel;
-            view.updateBoard(model);
+        } else {
+            // If square pressed has a piece, it's that piece's colour's turn and the piece
+            // isn't finished
+            if (pieceModel != null && isBlackTurn == pieceModel.isBlack() && !pieceModel.isFinished()) {
+                HashSet<Integer> squareIDs = Path.getPossibleMoves(pieceModel.isBlack(), squareModel.getID(), moves);
+                view.clearHighlights();
+                view.hightlightSquares(squareIDs);
+                lastPressed = squareModel;
+                view.updateBoard(model);
+            }
         }
     }
 }
