@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import model.BoardModel;
 import model.PieceModel;
@@ -236,4 +237,15 @@ public class BoardView extends JFrame {
         }
     }
 
+    public void clearHighlights() {
+        squares.forEach(square -> square.setHighlighted(false));
+    }
+
+    public void hightlightSquares(HashSet<Integer> squareIDs) {
+        for (SquareView square : squares) {
+            if (squareIDs.contains(square.getID())) {
+                square.setHighlighted(true);
+            }
+        }
+    }
 }

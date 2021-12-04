@@ -57,7 +57,7 @@ public class BoardController {
         view.getRollButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                moves = (int)(Math.random()*4);
+                moves = (int) (Math.random() * 4);
                 view.setMovesCount(moves);
                 view.getRollButton().setEnabled(false);
             }
@@ -73,21 +73,27 @@ public class BoardController {
 
     private void squarePressed(SquareView squareViewPressed) {
         SquareModel squareModel = model.getBoard().get(squareViewPressed.getID());
+        if (lastPressed != null && squareModel.getID() == lastPressed.getID()) {
+            view.clearHighlights();
+            lastPressed = null;
+        }
+        PieceModel pieceModel = squareModel.getPiece();
         if (lastPressed != null) {
             if (squareViewPressed.isHighlighted()) {
-                model.movePiece(lastPressed.getID(), squareModel.getID(), moves);
-            }   
-        }
-
-        PieceModel pieceModel = squareModel.getPiece();
-        if (pieceModel != null && isBlackTurn == pieceModel.isBlack() && isBlackTurn == isPlayerBlack && !pieceModel.isFinished()) {
-            HashSet<Integer> squareIDs = Path.getPossibleMoves(pieceModel.isBlack(), squareModel.getID(), moves);
-            view.getSquares().forEach(s -> s.setHighlighted(false));
-            for (SquareView squareView : view.getSquares()) {
-                if (squareIDs.contains(squareView.getID())) {
-                    squareView.setHighlighted(true);
+                PieceModel piece = lastPressed.getPiece();
+                if (model.movePiece(lastPressed.getID(), squareModel.getID(), moves)) {
+                    moves -= Path.getDistanceBetweenSquares(piece.isBlack(), lastPressed.getID(), squareModel.getID());
+                    view.setMovesCount(moves);
+                    view.clearHighlights();
+                    view.updateBoard(model);
                 }
             }
+        }
+
+        if (pieceModel != null && isBlackTurn == pieceModel.isBlack() && !pieceModel.isFinished()) {
+            HashSet<Integer> squareIDs = Path.getPossibleMoves(pieceModel.isBlack(), squareModel.getID(), moves);
+            view.clearHighlights();
+            view.hightlightSquares(squareIDs);
             lastPressed = squareModel;
             view.updateBoard(model);
         }

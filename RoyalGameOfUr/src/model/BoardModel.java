@@ -55,14 +55,15 @@ public class BoardModel {
         return pieces;
     }
 
-    public void movePiece(int initialSquareID, int destinationSquareID, int availableMoves) {
+    public boolean movePiece(int initialSquareID, int destinationSquareID, int availableMoves) {
+        System.out.println("InitialSquareID: " + initialSquareID + ", destinationSquareID: " + destinationSquareID + ", availableMoves: " + availableMoves);
         if (initialSquareID < 0 || initialSquareID > 24) {
             System.out.println("Invalid move - initial square out of bounds");
-            return;
+            return false;
         }
         if (destinationSquareID < 0 || destinationSquareID > 24) {
             System.out.println("Invalid move - destination square out of bounds");
-            return;
+            return false;
         }
         SquareModel initialSquare = squares.get(initialSquareID);
         SquareModel destinationSquare = squares.get(destinationSquareID);
@@ -71,16 +72,16 @@ public class BoardModel {
 
         if (piece == null) {
             System.out.println("Invalid move - no piece on initial square");
-            return;
+            return false;
         }
 
         int distance = Path.getDistanceBetweenSquares(piece.isBlack(), initialSquareID, destinationSquareID);
         if (distance == -1) {
             System.out.println("Invalid move - destination square unreachable by piece on initial square");
-            return;
+            return false;
         } else if (availableMoves < distance) {
             System.out.println("Invalid move - Not enough moves to move piece onto destination square");
-            return;
+            return false;
         }
 
         if (!isSquareOccupied(destinationSquareID)) {
@@ -90,12 +91,14 @@ public class BoardModel {
             PieceModel destinationPiece = destinationSquare.getPiece();
             if (destinationPiece.isBlack() == piece.isBlack()) {
                 System.out.println("Invalid move - destination square has piece of same colour");
-                return;
+                return false;
             } else {
+                destinationSquare.removePiece(destinationPiece);
                 destinationSquare.addPiece(piece);
                 initialSquare.removePiece(piece);
-                getInitialSquare(destinationPiece.isBlack()).addPiece(piece);
+                getInitialSquare(destinationPiece.isBlack()).addPiece(destinationPiece);
             }
         }
+        return true;
     }
 }
