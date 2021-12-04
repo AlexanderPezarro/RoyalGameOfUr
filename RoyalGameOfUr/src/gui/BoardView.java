@@ -28,6 +28,7 @@ public class BoardView extends JFrame {
     private JLabel movesCount;
     private JLayeredPane boardPanel;
     private JButton endTurnBtn;
+    private JButton rollBtn;
     private JLabel turnLabel;
 
     // Constructor
@@ -86,6 +87,15 @@ public class BoardView extends JFrame {
         gbc.anchor = GridBagConstraints.EAST;
         gbc.insets = new Insets(100, 0, 0, 0);
         backgroundPanel.add(endTurnBtn, gbc);
+
+        rollBtn = new JButton("Roll");
+        rollBtn.setFocusPainted(false);
+        gbc.gridx = 2;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.insets = new Insets(100, 0, 0, 0);
+        backgroundPanel.add(rollBtn, gbc);
 
         addDefaultPieces();
 
@@ -211,6 +221,10 @@ public class BoardView extends JFrame {
 
     public JButton getEndTurnButton() {
         return endTurnBtn;
+    }
+
+    public JButton getRollButton() {
+        return rollBtn;
     }
 
     // Toggle player's turn and output on Frame

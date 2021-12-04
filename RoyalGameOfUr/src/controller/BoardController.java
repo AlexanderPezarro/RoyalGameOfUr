@@ -23,7 +23,6 @@ public class BoardController {
     private int moves;
     private boolean isBlackTurn;
     private boolean isPlayerBlack;
-    private int totalRoll;
     private SquareModel lastPressed;
 
     public BoardController() {
@@ -31,11 +30,11 @@ public class BoardController {
         view = new BoardView(NUM_PIECES);
         moves = 0;
         isBlackTurn = true;
-        totalRoll = 3;
         lastPressed = null;
         isPlayerBlack = true;
 
         addActionListerners();
+        view.setTurnLabel(isBlackTurn);
     }
 
     public void setPlayerColour(boolean isPlayerBlack) {
@@ -50,8 +49,17 @@ public class BoardController {
                 moves = 0;
 
                 view.setMovesCount(moves);
-                // Re-enable roll button
-                // Change turn text
+                view.getRollButton().setEnabled(true);
+                view.setTurnLabel(isBlackTurn);
+            }
+        });
+
+        view.getRollButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                moves = (int)(Math.random()*4);
+                view.setMovesCount(moves);
+                view.getRollButton().setEnabled(false);
             }
         });
 
@@ -67,13 +75,13 @@ public class BoardController {
         SquareModel squareModel = model.getBoard().get(squareViewPressed.getID());
         if (lastPressed != null) {
             if (squareViewPressed.isHighlighted()) {
-                model.movePiece(lastPressed.getID(), squareModel.getID(), totalRoll);
+                model.movePiece(lastPressed.getID(), squareModel.getID(), moves);
             }   
         }
 
         PieceModel pieceModel = squareModel.getPiece();
         if (pieceModel != null && isBlackTurn == pieceModel.isBlack() && isBlackTurn == isPlayerBlack && !pieceModel.isFinished()) {
-            HashSet<Integer> squareIDs = Path.getPossibleMoves(pieceModel.isBlack(), squareModel.getID(), totalRoll);
+            HashSet<Integer> squareIDs = Path.getPossibleMoves(pieceModel.isBlack(), squareModel.getID(), moves);
             view.getSquares().forEach(s -> s.setHighlighted(false));
             for (SquareView squareView : view.getSquares()) {
                 if (squareIDs.contains(squareView.getID())) {
