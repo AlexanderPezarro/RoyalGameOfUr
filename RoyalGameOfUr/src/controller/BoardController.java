@@ -16,6 +16,8 @@ import model.SquareModel;
 public class BoardController {
 
     private static final int NUM_PIECES = 5;
+    private static final int MIN_ROLL = 0;
+    private static final int MAX_ROLL = 3;
 
     private BoardModel model;
     private BoardView view;
@@ -28,10 +30,7 @@ public class BoardController {
     public BoardController() {
         model = new BoardModel(NUM_PIECES);
         view = new BoardView(NUM_PIECES);
-        moves = 0;
-        isBlackTurn = true;
-        lastPressed = null;
-        hasRerolled = false;
+        resetBoard();
 
         addActionListerners();
         view.setTurnLabel(isBlackTurn);
@@ -54,7 +53,7 @@ public class BoardController {
         view.getRollButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                moves += (int) (Math.random() * 4);
+                moves += (int) ((Math.random() + MIN_ROLL) * (MAX_ROLL + 1));
                 view.setMovesCount(moves);
                 view.getRollButton().setEnabled(false);
             }
@@ -134,13 +133,20 @@ public class BoardController {
             }
             if (playAgain) {
                 model = new BoardModel(NUM_PIECES);
-                isBlackTurn = true;
-                view.setMovesCount(0);
-                view.setTurnLabel(isBlackTurn);
-                view.getRollButton().setEnabled(true);
-                view.clearHighlights();
-                view.updateBoard(model);
+                resetBoard();
             }
         }
+    }
+
+    private void resetBoard() {
+        moves = 0;
+        isBlackTurn = true;
+        lastPressed = null;
+        hasRerolled = false;
+        view.setMovesCount(moves);
+        view.setTurnLabel(isBlackTurn);
+        view.getRollButton().setEnabled(true);
+        view.clearHighlights();
+        view.updateBoard(model);
     }
 }
