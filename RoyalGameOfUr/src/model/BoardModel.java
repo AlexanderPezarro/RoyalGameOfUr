@@ -66,7 +66,6 @@ public class BoardModel {
     }
 
     public boolean movePiece(int initialSquareID, int destinationSquareID, int availableMoves) {
-        System.out.println("InitialSquareID: " + initialSquareID + ", destinationSquareID: " + destinationSquareID + ", availableMoves: " + availableMoves);
         if (initialSquareID < 0 || initialSquareID > 24) {
             System.out.println("Invalid move - initial square out of bounds");
             return false;

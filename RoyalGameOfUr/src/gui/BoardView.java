@@ -189,7 +189,7 @@ public class BoardView extends JFrame {
     }
 
     // Method to generate the window for outputing result when either side has won
-    public int showGameOverDialog(boolean isBlackWon) {
+    public boolean showGameOverDialog(boolean isBlackWon) {
         Object[] options = { "Replay", "Back" };
 
         String msg = "\nYou can play again or go back to the main menu.";
@@ -210,13 +210,13 @@ public class BoardView extends JFrame {
         // Allow user to choose between replay, back to main menu or close the game
         switch (n) {
             case JOptionPane.YES_OPTION:
-                return 1;
+                return true;
             case JOptionPane.NO_OPTION:
-                return 0;
+                return false;
             case JOptionPane.CLOSED_OPTION:
-                return 0;
+                return false;
             default:
-                return 0;
+                return false;
         }
     }
 

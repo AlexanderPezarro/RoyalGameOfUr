@@ -101,6 +101,8 @@ public class BoardController {
                         view.clearHighlights();
                         lastPressed = null;
                         view.updateBoard(model);
+
+                        isGameOver();
                     }
                 } else {
                     view.clearHighlights();
@@ -116,6 +118,27 @@ public class BoardController {
                 view.clearHighlights();
                 view.hightlightSquares(squareIDs);
                 lastPressed = squareModel;
+                view.updateBoard(model);
+            }
+        }
+    }
+
+    private void isGameOver() {
+        if (model.getFinishSquare(true).getPieces().size() == 5
+                || model.getFinishSquare(false).getPieces().size() == 5) {
+            boolean playAgain = false;
+            if (model.getFinishSquare(true).getPieces().size() == 5) {
+                playAgain = view.showGameOverDialog(true);
+            } else {
+                playAgain = view.showGameOverDialog(false);
+            }
+            if (playAgain) {
+                model = new BoardModel(NUM_PIECES);
+                isBlackTurn = true;
+                view.setMovesCount(0);
+                view.setTurnLabel(isBlackTurn);
+                view.getRollButton().setEnabled(true);
+                view.clearHighlights();
                 view.updateBoard(model);
             }
         }
