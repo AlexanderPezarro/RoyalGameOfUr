@@ -80,7 +80,7 @@ public class BoardController {
                 lastPressed = null;
                 view.updateBoard(model);
             } else {
-                HashSet<Integer> validMoveIDs = Path.getPossibleMoves(lastPressed.getPiece().isBlack(),
+                HashSet<Integer> validMoveIDs = Path.getPossibleFinalSquares(lastPressed.getPiece().isBlack(),
                         lastPressed.getID(),
                         moves);
 
@@ -113,7 +113,7 @@ public class BoardController {
             // If square pressed has a piece, it's that piece's colour's turn and the piece
             // isn't finished
             if (pieceModel != null && isBlackTurn == pieceModel.isBlack() && !pieceModel.isFinished()) {
-                HashSet<Integer> squareIDs = Path.getPossibleMoves(pieceModel.isBlack(), squareModel.getID(), moves);
+                HashSet<Integer> squareIDs = Path.getPossibleFinalSquares(pieceModel.isBlack(), squareModel.getID(), moves);
                 view.clearHighlights();
                 view.hightlightSquares(squareIDs);
                 lastPressed = squareModel;

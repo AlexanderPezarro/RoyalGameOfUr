@@ -177,9 +177,9 @@ public class BoardView extends JFrame {
             gbc.gridy = gridCoords.get(1);
             for (PieceModel piece : square.getPieces()) {
                 if (!piece.isBlack() && gridCoords.get(0) == 7 && gridCoords.get(1) == 2) {
-                    boardPanel.add(pieces.get(piece.getId()), gbc, 0);    
+                    boardPanel.add(pieces.get(piece.getID()), gbc, 0);    
                 } else {
-                    boardPanel.add(pieces.get(piece.getId()), gbc, 1);
+                    boardPanel.add(pieces.get(piece.getID()), gbc, 1);
                 }
             }
         }

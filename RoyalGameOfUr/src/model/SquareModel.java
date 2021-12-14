@@ -35,7 +35,7 @@ public class SquareModel {
         if (!isStarting && !isFinishing) {
             pieces.clear();
         } else {
-            pieces.removeIf(piece -> piece.getId() == pieceID);
+            pieces.removeIf(piece -> piece.getID() == pieceID);
         }
     }
 
@@ -87,5 +87,20 @@ public class SquareModel {
 
     public boolean isOccupied() {
         return pieces.size() != 0;
+    }
+
+    @Override
+    protected Object clone() {
+        SquareModel newModel = new SquareModel(id);
+        if (isFinishing) {
+            newModel.setFinishing();
+        }
+        if (isStarting) {
+            newModel.setStarting();
+        }
+        if (isRossete) {
+            newModel.setRossete();
+        }
+        return newModel;
     }
 }

@@ -13,7 +13,7 @@ public class PieceModel {
         currentSquareID = -1;
     }
 
-    public int getId() {
+    public int getID() {
         return id;
     }
 
@@ -37,4 +37,13 @@ public class PieceModel {
         this.currentSquareID = currentSquareID;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass() == this.getClass()) {
+            PieceModel piece = (PieceModel)obj;
+            return piece.isBlack() == this.isBlack && piece.getCurrentSquareID() == this.currentSquareID;
+        } else {
+            return false;
+        }
+    }
 }
