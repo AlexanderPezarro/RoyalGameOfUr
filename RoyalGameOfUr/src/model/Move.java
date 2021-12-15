@@ -11,10 +11,10 @@ public final class Move {
     public static HashSet<HashSet<Move>> getAllPossibleMoveSets(BoardModel board, boolean isBlack, int moves) {
         HashSet<HashSet<Move>> possibleMoveSets = new HashSet<>();
 
-        if (moves == 0) return possibleMoveSets;
-
+        // Get the correct colour of pieces
         ArrayList<PieceModel> pieces = isBlack ? board.getPieces(true) : board.getPieces(false);
         HashSet<Integer> startingSqaureIDs = new HashSet<>();
+        
         // Gets the set of squares the pieces are currently on
         pieces.forEach(piece -> startingSqaureIDs.add(piece.getCurrentSquareID()));
 
@@ -67,18 +67,23 @@ public final class Move {
                     isDestinationFree = board.getBoard().get(move.getDestinationSquareID()).getPiece().isBlack() != isBlack;
                 } else {
                     isDestinationFree = true;
-                }
-                
+                }  
             }
-            
+            int movesFromSameSquare = 1;
             for (Move move2 : moveSet) {
                 if (move == move2) continue;
-                if (move.getDestinationSquareID() == move2.getDestinationSquareID()) {
+                if (move.getDestinationSquareID() == move2.getDestinationSquareID() && !board.getBoard().get(move.getDestinationSquareID()).isFinishing()) {
                     return false;
+                }
+                if (move.getInitialSquareID() == move2.getInitialSquareID()) {
+                    movesFromSameSquare++;
                 }
                 isDestinationFree = isDestinationFree ? true : move2.getInitialSquareID() == move.getDestinationSquareID();
             }
             if (!isDestinationFree) {
+                return false;
+            }
+            if (board.getBoard().get(move.getInitialSquareID()).getPieces().size() < movesFromSameSquare) {
                 return false;
             }
         }
@@ -115,5 +120,10 @@ public final class Move {
     @Override
     public int hashCode() {
         return 3 * initialSquareID + 5 * destinationSquareID + 7 * moves;
+    }
+
+    @Override
+    public String toString() {
+        return "initial square: " + initialSquareID + ", destination square: " + destinationSquareID;
     }
 }

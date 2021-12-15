@@ -43,7 +43,7 @@ public class MainMenu extends JFrame {
         singlePlayerButton.setFocusPainted(false);
         singlePlayerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new BoardController();
+                new BoardController(true, true);
                 dispose();
             }
         });

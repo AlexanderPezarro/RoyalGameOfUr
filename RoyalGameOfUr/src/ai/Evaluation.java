@@ -40,19 +40,8 @@ public class Evaluation {
             rosseteBonus *= -1;
         }
 
-        HashSet<Move> doneMoves = new HashSet<>();
-        int tries = moveSet.size() + 1;
-        while (!moveSet.isEmpty()) {
-            for (Move move : moveSet) {
-                if (board.movePiece(move.getInitialSquareID(), move.getDestinationSquareID(), availableMoves)) {
-                    doneMoves.add(move);
-                }   
-            }
-            moveSet.removeAll(doneMoves);
-            if (tries-- <= 0) {
-                System.out.println("Used up tries in evaluation, invalid move in move set");
-            }
-        }
+        board.playMoveSet(moveSet, availableMoves);
+        
         return evaluate(board) + rosseteBonus;
     }
     

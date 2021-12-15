@@ -52,7 +52,7 @@ public final class Path {
                     HashSet<Move> possibleMoves = new HashSet<>(moves);
                     for (int j = 1; j <= moves; j++) {
                         if (i + j < BLACK_PATH.length) {
-                            possibleMoves.add(new Move(currentSquareID, BLACK_PATH[j], j));
+                            possibleMoves.add(new Move(currentSquareID, BLACK_PATH[i + j], j));
                         } else {
                             break;
                         }
@@ -66,7 +66,7 @@ public final class Path {
                     HashSet<Move> possibleMoves = new HashSet<>(moves);
                     for (int j = 1; j <= moves; j++) {
                         if (i + j < WHITE_PATH.length) {
-                            possibleMoves.add(new Move(currentSquareID, WHITE_PATH[j], j));
+                            possibleMoves.add(new Move(currentSquareID, WHITE_PATH[i + j], j));
                         } else {
                             break;
                         }

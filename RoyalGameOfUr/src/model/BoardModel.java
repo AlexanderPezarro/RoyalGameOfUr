@@ -92,6 +92,7 @@ public class BoardModel {
         for (PieceModel pieceModel : board.getPieces()) {
             PieceModel piece = new PieceModel(pieceModel.getID(), pieceModel.isBlack());
             squares.get(pieceModel.getCurrentSquareID()).addPiece(piece);
+            pieces.add(piece);
 
             if (piece.isBlack()) {
                 blackPieces.add(piece);
@@ -219,6 +220,28 @@ public class BoardModel {
             }
         }
         return true;
+    }
+
+    public int playMoveSet(HashSet<Move> moveSet, int availableMoves) {
+        HashSet<Move> doneMoves = new HashSet<>();
+        int tries = moveSet.size() + 1;
+        while (!moveSet.isEmpty()) {
+            for (Move move : moveSet) {
+                if (movePiece(move.getInitialSquareID(), move.getDestinationSquareID(), availableMoves)) {
+                    availableMoves -= move.getMoves();
+                    doneMoves.add(move);
+                }   
+            }
+            moveSet.removeAll(doneMoves);
+            if (tries-- <= 0) {
+                System.out.println("Used up tries in applying move set, invalid move in move set:");
+                for (Move move : moveSet) {
+                    System.out.println(move);
+                }
+                break;
+            }
+        }
+        return availableMoves;
     }
 
     @Override
