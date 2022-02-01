@@ -47,6 +47,7 @@ public class BoardView extends JFrame {
         setTitle("Royal Game of Ur");
         setResizable(false);
         setLocationRelativeTo(null);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         JPanel backgroundPanel = new JPanel(new GridBagLayout());
         boardPanel = new JLayeredPane();

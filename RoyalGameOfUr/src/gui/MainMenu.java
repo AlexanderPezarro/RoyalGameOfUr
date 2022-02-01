@@ -25,6 +25,7 @@ public class MainMenu extends JFrame {
         setSize(1000, 800);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         JPanel backgroundPanel = new JPanel(new GridBagLayout());
         JPanel buttonPanel = new JPanel(new GridBagLayout());
