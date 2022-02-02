@@ -6,7 +6,6 @@ import model.BoardModel;
 import model.Move;
 import model.Path;
 import model.PieceModel;
-import model.SquareModel;
 
 public class Evaluation {
     
@@ -23,7 +22,7 @@ public class Evaluation {
         return whiteScore - blackScore;
     }
 
-    public static int evaluate(BoardModel board, HashSet<Move> moveSet, boolean isBlack, int availableMoves) {
+    public static Evaluation evaluate(BoardModel board, HashSet<Move> moveSet, boolean isBlack, int availableMoves) {
         int rosseteBonus = 0;
         boolean landedOnRossete = false;
         for (Move move : moveSet) {
@@ -42,99 +41,43 @@ public class Evaluation {
 
         board.playMoveSet(moveSet, availableMoves);
         
-        return evaluate(board) + rosseteBonus;
+        return new Evaluation(evaluate(board) + rosseteBonus);
     }
-    
-    // Not used
-    private static int evaluate(BoardModel initialBoard, BoardModel finalBoard) {
-        int rosseteSquaresBlackInitial = 0;
-        int rosseteSquaresWhiteInitial = 0;
-        for (PieceModel piece : initialBoard.getPieces()) {
-            if (initialBoard.getBoard().get(piece.getCurrentSquareID()).isRossete()) {
-                if (piece.isBlack()) {
-                    rosseteSquaresBlackInitial++;
-                } else {
-                    rosseteSquaresWhiteInitial++;
-                }
-            }
-        }
 
-        int whiteScore = 0;
-        int blackScore = 0;
-        int rosseteSquaresBlackFinal = 0;
-        int rosseteSquaresWhiteFinal = 0;
-        for (PieceModel piece : finalBoard.getPieces()) {
-            if (piece.isBlack()) {
-                blackScore += Path.getDistanceBetweenSquares(true, finalBoard.getInitialSquare(true).getID(), piece.getCurrentSquareID());
-                if (initialBoard.getBoard().get(piece.getCurrentSquareID()).isRossete()) {
-                    rosseteSquaresBlackFinal++;
-                }
-            } else {
-                whiteScore += Path.getDistanceBetweenSquares(false, finalBoard.getInitialSquare(false).getID(), piece.getCurrentSquareID());
-                if (initialBoard.getBoard().get(piece.getCurrentSquareID()).isRossete()) {
-                    rosseteSquaresWhiteFinal++;
-                }
-            }
-        }
-        if (rosseteSquaresBlackFinal == rosseteSquaresBlackInitial + 1) {
-            blackScore += 20;
-        } else if(rosseteSquaresBlackFinal > rosseteSquaresBlackInitial + 1) {
-            blackScore += 15;
-        }
+    private HashSet<Move> moveSet;
+    private float eval;
 
-        if (rosseteSquaresWhiteFinal == rosseteSquaresWhiteInitial + 1) {
-            whiteScore += 20;
-        } else if(rosseteSquaresWhiteFinal > rosseteSquaresWhiteInitial + 1) {
-            whiteScore += 15;
-        }
-        return whiteScore - blackScore;
+    public Evaluation(HashSet<Move> moveSet, float eval) {
+        this.moveSet = moveSet;
+        this.eval = eval;
     }
-    // Not used
-    private static int evaluate(BoardModel board, int initialSquare, int finalSquare) {
-        int score = 0;
-        PieceModel initialPiece = board.getBoard().get(initialSquare).getPiece();
-        PieceModel finalPiece = board.getBoard().get(finalSquare).getPiece();
-        if (initialPiece == null) {
-            return -1;
-        }
 
-        if (finalPiece != null) {
-            if (finalPiece.isBlack() == initialPiece.isBlack()) {
-                return -1;
-            } else {
-                score += Path.getDistanceBetweenSquares(finalPiece.isBlack(), finalPiece.getID(), board.getInitialSquare(finalPiece.isBlack()).getID());
-            }
-        }
-        score += Path.getDistanceBetweenSquares(initialPiece.isBlack(), initialSquare, finalSquare);
-
-        if (board.getBoard().get(finalSquare).isRossete()) {
-            score += 20;
-        }
-        
-        return score;
+    public Evaluation(float eval) {
+        this(null, eval);
     }
-    // Not used
-    private static int evaluate(BoardModel board, SquareModel initialSquare, SquareModel finalSquare) {
-        int score = 0;
-        PieceModel initialPiece = initialSquare.getPiece();
-        PieceModel finalPiece = finalSquare.getPiece();
-        if (initialPiece == null) {
-            return -1;
-        }
 
-        if (finalPiece != null) {
-            if (finalPiece.isBlack() == initialPiece.isBlack()) {
-                return -1;
-            } else {
-                score += Path.getDistanceBetweenSquares(finalPiece.isBlack(), finalPiece.getID(), board.getInitialSquare(finalPiece.isBlack()).getID());
-            }
-        }
-        score += Path.getDistanceBetweenSquares(initialPiece.isBlack(), initialSquare.getID(), finalSquare.getID());
+    public Evaluation() {
+        this(null, 0);
+    }
 
-        if (finalSquare.isRossete()) {
-            score += 20;
-        }
-        
-        return score;
+    public boolean isEvaluationGreater(Evaluation eval) {
+        return (eval.getEval() > this.eval);
+
+    }
+
+    public HashSet<Move> getMoveSet() {
+        return moveSet;
+    }
+
+    public void setMoveSet(HashSet<Move> moveSet) {
+        this.moveSet = moveSet;
+    }
+
+    public float getEval() {
+        return eval;
+    }
+
+    public void setEval(float eval) {
+        this.eval = eval;
     }
 }

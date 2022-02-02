@@ -18,9 +18,9 @@ import model.SquareModel;
 
 public class BoardController {
 
-    private static final int NUM_PIECES = 5;
-    private static final int MIN_ROLL = 0;
-    private static final int MAX_ROLL = 3;
+    public static final int NUM_PIECES = 5;
+    public static final int MIN_ROLL = 0;
+    public static final int MAX_ROLL = 3;
 
     private BoardModel model;
     private BoardView view;
