@@ -10,6 +10,10 @@ public final class Move {
 
     public static HashSet<HashSet<Move>> getAllPossibleMoveSets(BoardModel board, boolean isBlack, int moves) {
         HashSet<HashSet<Move>> possibleMoveSets = new HashSet<>();
+        if (moves == 0) {
+            possibleMoveSets.add(new HashSet<Move>(0));
+            return possibleMoveSets;
+        }
 
         // Get the correct colour of pieces
         ArrayList<PieceModel> pieces = isBlack ? board.getPieces(true) : board.getPieces(false);
