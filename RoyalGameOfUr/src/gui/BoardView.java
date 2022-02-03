@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.GridBagConstraints;
+import java.awt.Toolkit;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -32,6 +33,10 @@ public class BoardView extends JFrame {
     private JButton rollBtn;
     private JLabel turnLabel;
 
+    private final Dimension SIZE = Toolkit.getDefaultToolkit().getScreenSize();
+    private final int HEIGHT = SIZE.height;
+    private final int WIDTH = SIZE.width;
+
     // Constructor
     public BoardView(int numPieces) {
         squares = new ArrayList<>(24);
@@ -43,11 +48,11 @@ public class BoardView extends JFrame {
     // Main method to crate GUI
     public void createUI() {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(new Dimension(1000, 1000));
         setTitle("Royal Game of Ur");
         setResizable(false);
         setLocationRelativeTo(null);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
+        System.out.println(HEIGHT + " - " + WIDTH);
 
         JPanel backgroundPanel = new JPanel(new GridBagLayout());
         boardPanel = new JLayeredPane();
@@ -55,54 +60,60 @@ public class BoardView extends JFrame {
 
         GridBagConstraints gbc = new GridBagConstraints();
 
-        addDefaultBoard();
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
-        backgroundPanel.add(boardPanel, gbc);
+        gbc.weightx = WIDTH / 32;
+        gbc.weighty = HEIGHT / 18;
 
+        setGBC(gbc, 0, 0, 1, 1);
+        backgroundPanel.add(new JLabel(""), gbc);
+
+        // for (int i = 0; i < 32; i++) {
+        // for (int j = 0; j < 18; j++) {
+        // setGBC(gbc, i, j, 1, 1);
+        // backgroundPanel.add(new JLabel("."), gbc);
+        // }
+        // }
+
+
+        setGBC(gbc, 8, 9, 16, 9);
+        addDefaultBoard();
+        backgroundPanel.add(boardPanel, gbc);
+        
         // Label to show player's turn
         turnLabel = new JLabel("It is White's turn");
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.insets = new Insets(0, 0, 200, 0);
+        setGBC(gbc, 8, 1, 8, 4);
         backgroundPanel.add(turnLabel, gbc);
 
         // Label to show moves left
         movesCount = new JLabel("Current moves left: 0");
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        gbc.anchor = GridBagConstraints.EAST;
-        gbc.insets = new Insets(0, 0, 200, 0);
+        setGBC(gbc, 8, 5, 8, 4);
         backgroundPanel.add(movesCount, gbc);
 
         // Button to switch control to other side of the player when pushed
         endTurnBtn = new JButton("End turn");
         endTurnBtn.setFocusPainted(false);
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        gbc.gridwidth = 1;
-        gbc.anchor = GridBagConstraints.EAST;
-        gbc.insets = new Insets(100, 0, 0, 0);
+        setGBC(gbc, 16, 1, 8, 4);
         backgroundPanel.add(endTurnBtn, gbc);
 
         rollBtn = new JButton("Roll");
         rollBtn.setFocusPainted(false);
-        gbc.gridx = 2;
-        gbc.gridy = 2;
-        gbc.gridwidth = 1;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.insets = new Insets(100, 0, 0, 0);
+        setGBC(gbc, 16, 5, 8, 4);
         backgroundPanel.add(rollBtn, gbc);
 
+        setGBC(gbc, 31, 17, 1, 1);
+        backgroundPanel.add(new JLabel(""), gbc);
+        
         addDefaultPieces();
-
+        
         add(backgroundPanel);
         setVisible(true);
+    }
+    
+    private void setGBC(GridBagConstraints gbc, int x, int y, int width, int height) {
+        gbc.gridx = x;
+        gbc.gridy = y;
+        gbc.gridwidth = width;
+        gbc.gridheight = height;
     }
 
     // Method to draw Board
@@ -112,6 +123,10 @@ public class BoardView extends JFrame {
         boolean isPainted = true;
 
         gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = WIDTH / 16;
+        gbc.weighty = HEIGHT / 9;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
         gbc.insets = new Insets(1, 1, 1, 1);
         for (int i = 0; i < 24; i++) {
             gbc.gridx = i % 8;
