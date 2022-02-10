@@ -144,32 +144,20 @@ public class BoardModel {
     }
 
     public boolean movePiece(int initialSquareID, int destinationSquareID, int availableMoves) {
-        if (initialSquareID < 0 || initialSquareID > 24) {
-            System.out.println("Invalid move - initial square out of bounds");
-            return false;
-        }
-        if (destinationSquareID < 0 || destinationSquareID > 24) {
-            System.out.println("Invalid move - destination square out of bounds");
-            return false;
-        }
+        if (initialSquareID < 0 || initialSquareID > 24) return false;
+        if (destinationSquareID < 0 || destinationSquareID > 24) return false;
+        
         SquareModel initialSquare = squares.get(initialSquareID);
         SquareModel destinationSquare = squares.get(destinationSquareID);
 
         PieceModel piece = initialSquare.getPiece();
 
-        if (piece == null) {
-            System.out.println("Invalid move - no piece on initial square");
-            return false;
-        }
+        if (piece == null) return false;
 
         int distance = Path.getDistanceBetweenSquares(piece.isBlack(), initialSquareID, destinationSquareID);
-        if (distance == -1) {
-            System.out.println("Invalid move - destination square unreachable by piece on initial square");
-            return false;
-        } else if (availableMoves < distance) {
-            System.out.println("Invalid move - Not enough moves to move piece onto destination square");
-            return false;
-        }
+        if (distance == -1) return false;
+        if (availableMoves < distance) return false;
+        
 
         if (!isSquareOccupied(destinationSquareID)) {
             destinationSquare.addPiece(piece);
@@ -200,10 +188,8 @@ public class BoardModel {
                         occupiedWhiteSquareIDs.add(destinationSquareID);
                     }
 
-                } else {
-                    System.out.println("Invalid move - destination square has piece of same colour");
-                    return false;
                 }
+                return false;
             } else {
                 destinationSquare.removePiece(destinationPiece);
                 destinationSquare.addPiece(piece);

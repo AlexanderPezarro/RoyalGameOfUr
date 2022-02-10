@@ -9,7 +9,7 @@ import model.Move;
 public class MinMax {
 
     public static HashSet<Move> pickMove(BoardModel board, boolean isBlack, int moves) {
-        return pickMoveHelper(board, isBlack, moves, 1).getMoveSet();
+        return pickMoveHelper(board, isBlack, moves, 3).getMoveSet();
     }
 
     private static Evaluation pickMoveHelper(BoardModel board, boolean isBlack, int moves, int depth) {
